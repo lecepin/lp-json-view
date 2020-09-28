@@ -2,7 +2,17 @@
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getContent") {
-    sendResponse(window.document.body.innerHTML);
+    let content = "";
+    if (
+      window.document.getElementsByTagName("pre") &&
+      window.document.getElementsByTagName("pre")[0] &&
+      window.document.getElementsByTagName("pre").length == 1
+    ) {
+      content = window.document.getElementsByTagName("pre")[0].innerHTML;
+    } else {
+      content = window.document.body.innerHTML;
+    }
+    sendResponse(content);
   }
 
   return true;

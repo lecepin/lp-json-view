@@ -44,6 +44,12 @@ class App extends React.Component {
         );
       });
     }
+
+    setTimeout(() => {
+      this.setState({
+        isErr: true,
+      });
+    }, 500);
   }
 
   render() {
@@ -57,6 +63,7 @@ class App extends React.Component {
             src={JSON.parse(data || "{}")}
             iconStyle="square"
             indentWidth={2}
+            displayDataTypes={false}
           />
         ) : isErr ? (
           <div className="App-err">
