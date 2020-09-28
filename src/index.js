@@ -24,6 +24,7 @@ class App extends React.Component {
       window.chrome.tabs.query({ active: true, currentWindow: true }, function (
         tabs
       ) {
+        if (!tabs) return;
         window.chrome.tabs.sendMessage(
           tabs[0].id,
           { action: "getContent" },

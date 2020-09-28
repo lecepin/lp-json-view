@@ -21,3 +21,7 @@ body {
   width: 20px;
   margin-right: 5px;
 }
+
+.react-json-view{
+  font-size: 14px;
+}
