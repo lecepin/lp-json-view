@@ -23,5 +23,6 @@
       "run_at": "document_end",
       "js": ["contentScript.js"]
     }
-  ]
+  ],
+  "homepage_url": "https://lp-pwa.gitee.io/json-view/?parse"
 }
