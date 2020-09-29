@@ -49,8 +49,8 @@ class App extends React.Component {
         );
     }
 
-    url.search.includes("view") &&
-      url.search.includes("parse") &&
+    !url.search.includes("view") &&
+      !url.search.includes("parse") &&
       setTimeout(() => {
         this.setState({
           isErr: true,
