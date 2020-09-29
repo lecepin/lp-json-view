@@ -5,8 +5,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let content = "";
     if (
       window.document.getElementsByTagName("pre") &&
-      window.document.getElementsByTagName("pre")[0] &&
-      window.document.getElementsByTagName("pre").length == 1
+      window.document.getElementsByTagName("pre")[0]
     ) {
       content = window.document.getElementsByTagName("pre")[0].innerHTML;
     } else {
