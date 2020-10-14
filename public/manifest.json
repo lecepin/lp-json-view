@@ -14,13 +14,19 @@
   },
   "browser_action": {
     "default_title": "Json View",
-    "default_popup": "index.html"
+    "default_popup": "index.html?jump"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "js": ["contentScript.js"]
+      "css": ["static/css/main.55101f34.chunk.css"],
+      "js": [
+        "boot.js",
+        "static/js/2.88e0994d.chunk.js",
+        "static/js/main.973f4b35.chunk.js",
+        "contentScript.js"
+      ]
     }
   ],
   "homepage_url": "https://lp-pwa.gitee.io/json-view/?parse"

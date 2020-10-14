@@ -1,3 +1,7 @@
+var ___lp_json_view_root_el = document.createElement("div");
+___lp_json_view_root_el.id = "___lp-json-view-root";
+document.body.appendChild(___lp_json_view_root_el);
+
 !(function (e) {
   function r(r) {
     for (

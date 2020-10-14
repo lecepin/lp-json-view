@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ReactJson from "react-json-view";
+import ReactJson from "lp-rjv";
 import "./index.css";
 
 class App extends React.Component {
@@ -8,124 +8,188 @@ class App extends React.Component {
     super(props);
     this.state = {
       data: "",
-      isErr: false,
+      showView: false,
+      isJson: false,
+      viewRaw: true,
+      rjvKey: Date.now(),
+      collapsed: false,
     };
   }
   componentDidMount() {
-    const url = new URL(window.location.href);
-    const win =
-      window.chrome.extension && window.chrome.extension.getBackgroundPage();
-    const _this = this;
+    if (
+      window.location.href.indexOf("chrome-extension://") == 0 &&
+      window.location.href.indexOf("?jump") > 0
+    ) {
+      window.chrome.tabs.create({ url: "index.html?parse" });
+    }
+    let content = "";
+    this.el = null;
 
-    this.setState({
-      data: (win && win.data) || "",
-    });
-
-    if (!url.search.includes("view")) {
-      window.chrome.tabs &&
-        window.chrome.tabs.query(
-          { active: true, currentWindow: true },
-          function (tabs) {
-            if (!tabs) return;
-            window.chrome.tabs.sendMessage(
-              tabs[0].id,
-              { action: "getContent" },
-              function (response) {
-                try {
-                  if (response && JSON.parse(response)) {
-                    win.data = response;
-                    window.chrome.tabs.create({
-                      url: "index.html?view",
-                    });
-                  }
-                } catch (error) {
-                  _this.setState({
-                    isErr: true,
-                  });
-                }
-              }
-            );
-          }
-        );
+    if (
+      window.document.getElementsByTagName("pre") &&
+      window.document.getElementsByTagName("pre")[0]
+    ) {
+      content = window.document.getElementsByTagName("pre")[0].innerHTML;
+      this.el = window.document.getElementsByTagName("pre")[0];
+    } else if (document.body.childNodes && document.body.childNodes[0]) {
+      content = document.body.childNodes[0].data;
+      this.el = document.body.childNodes[0];
     }
 
-    !url.search.includes("view") &&
-      !url.search.includes("parse") &&
-      setTimeout(() => {
+    try {
+      if (content.trimLeft().indexOf("{") == 0 && JSON.parse(content)) {
         this.setState({
-          isErr: true,
+          data: content,
+          isJson: true,
         });
-      }, 500);
+      }
+    } catch (error) {
+      this.setState({
+        isJson: false,
+      });
+    }
+  }
+
+  handleViewRawClick(value) {
+    if (value) {
+      this.el = document.createElement("pre");
+      this.el.style.cssText = "word-wrap: break-word; white-space: pre-wrap;";
+      this.el.innerHTML = this.state.data;
+      this.setState({
+        showView: false,
+      });
+      document.body.insertBefore(
+        this.el,
+        document.getElementById("___lp-json-view-root")
+      );
+      document.body.appendChild(this.el);
+    } else {
+      try {
+        this.el.remove();
+      } catch (error) {}
+
+      this.setState({
+        showView: true,
+      });
+    }
+    this.setState({
+      viewRaw: value,
+    });
+  }
+
+  handleTextAreaChange(e) {
+    e.persist();
+
+    try {
+      let jsonData = JSON.parse(e.target.value);
+      this.setState({
+        data: jsonData,
+        rjvKey: Date.now(),
+      });
+    } catch (error) {
+      this.setState({
+        data: 1,
+      });
+    }
+  }
+
+  handleStatusChange(e) {
+    e.persist();
+    let value = false;
+
+    if (e.target.value == "true") {
+      value = true;
+    } else if (e.target.value == "false") {
+    } else {
+      value = +e.target.value;
+    }
+
+    this.setState({ collapsed: value, rjvKey: Date.now() });
   }
 
   render() {
-    const { data, isErr } = this.state;
+    const { data, showView, viewRaw, isJson, rjvKey, collapsed } = this.state;
     const url = new URL(window.location.href);
 
     return (
-      <div className="App">
-        {url.search.includes("view") ? (
-          <>
+      <div className="___lp-json-view-App">
+        {showView ? (
+          <div className="___lp-json-view-App-view">
+            <div className="___lp-json-view-App-status">
+              展开状态：
+              <select onChange={(e) => this.handleStatusChange(e)}>
+                <option value="false">全部展开</option>
+                <option value="true">全部折叠</option>
+                <option value="1">展开1层</option>
+                <option value="2">展开2层</option>
+                <option value="3">展开3层</option>
+              </select>
+            </div>
             <ReactJson
-              src={JSON.parse(data || "{}")}
+              collapsed={collapsed}
+              name={null}
+              src={JSON.parse(data)}
               iconStyle="square"
               indentWidth={2}
               displayDataTypes={false}
             />
-            <img
-              src="https://img.alicdn.com/tfs/TB1dawAWbr1gK0jSZFDXXb9yVXa-128-128.svg"
-              className="view-parse"
-              title="打开解析页面"
-              onClick={() => {
-                window.location.href = "index.html?parse";
-              }}
-            />
-          </>
-        ) : (
-          ""
-        )}
-        {url.search.includes("parse") ? (
-          <div className="parse-box">
-            <div>
-              <textarea
-                className="parse-box-textarea"
-                onChange={(e) => {
-                  e.persist();
+          </div>
+        ) : null}
 
-                  try {
-                    let jsonData = JSON.parse(e.target.value);
-                    this.setState({
-                      data: jsonData,
-                    });
-                  } catch (error) {
-                    this.setState({
-                      data: 1,
-                    });
-                  }
-                }}
-              ></textarea>
-            </div>
-            <div>
-              <ReactJson
-                src={data || {}}
-                iconStyle="square"
-                indentWidth={2}
-                displayDataTypes={false}
-              />
+        {url.search.includes("parse") &&
+        (!window.chrome.runtime.id ||
+          window.location.href.indexOf("chrome-extension://") == 0) ? (
+          <div className="___lp-json-view-App-view">
+            <div className="___lp-json-view-App-parse-box">
+              <div>
+                <textarea
+                  className="___lp-json-view-App-parse-box-textarea"
+                  onChange={(e) => this.handleTextAreaChange(e)}
+                ></textarea>
+              </div>
+              <div>
+                <div className="___lp-json-view-App-status">
+                  展开状态：
+                  <select onChange={(e) => this.handleStatusChange(e)}>
+                    <option value="false">全部展开</option>
+                    <option value="true">全部折叠</option>
+                    <option value="1">展开1层</option>
+                    <option value="2">展开2层</option>
+                    <option value="3">展开3层</option>
+                  </select>
+                </div>
+                <ReactJson
+                  key={rjvKey}
+                  name={null}
+                  src={data || {}}
+                  iconStyle="square"
+                  indentWidth={2}
+                  displayDataTypes={false}
+                  onDelete={(f) => f}
+                  collapsed={collapsed}
+                />
+              </div>
             </div>
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
 
-        {isErr ? (
-          <div className="App-err">
-            <img src="https://img.alicdn.com/tfs/TB1Hfu9WbY1gK0jSZTEXXXDQVXa-128-128.svg" />
-            <div>非 JSON 内容，无法使用</div>
+        {(isJson && (
+          <div className="___lp-json-view-App-switch">
+            <div
+              className={viewRaw ? "___lp-json-view-App-switch-active" : ""}
+              onClick={() => this.handleViewRawClick(true)}
+            >
+              原始数据
+            </div>
+            <div
+              className={!viewRaw ? "___lp-json-view-App-switch-active" : ""}
+              onClick={() => this.handleViewRawClick(false)}
+            >
+              JSON数据
+            </div>
           </div>
-        ) : (
-          ""
-        )}
+        )) ||
+          null}
       </div>
     );
   }
@@ -135,5 +199,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById("root")
+  !window.chrome.runtime.id
+    ? document.getElementById("___lp-json-view-root2")
+    : document.getElementById("___lp-json-view-root")
 );

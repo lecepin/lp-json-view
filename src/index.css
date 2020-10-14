@@ -1,55 +1,54 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+.___lp-json-view-App {
 }
 
-.App {
+.___lp-json-view-App-view {
   padding: 20px;
 }
 
-.App-err {
+.___lp-json-view-App-err {
   display: flex;
   align-items: center;
   font-size: 14px;
   white-space: nowrap;
 }
-.App-err > img {
+.___lp-json-view-App-err > img {
   width: 20px;
   margin-right: 5px;
 }
 
-.react-json-view {
+.___lp-json-view-App .react-json-view {
   font-size: 14px;
 }
 
-.parse-box {
+.___lp-json-view-App-parse-box {
+  width: 100%;
+  overflow: hidden;
   display: flex;
   height: calc(100vh - 40px);
 }
 
-.parse-box > div {
+.___lp-json-view-App-parse-box > div {
   width: 0;
   flex-grow: 1;
 }
 
-.parse-box > div:first-child {
+.___lp-json-view-App-parse-box > div:first-child {
   margin-right: 20px;
   padding-right: 20px;
   border-right: 1px dashed;
 }
 
-.parse-box > div:nth-child(2) {
+.___lp-json-view-App-parse-box > div:nth-child(2) {
   flex-grow: 2;
   margin-right: -20px;
   height: 100%;
   overflow-y: auto;
 }
 
-.parse-box-textarea {
+.___lp-json-view-App-parse-box-textarea {
   width: 100%;
   margin: 0;
   padding: 0;
@@ -59,7 +58,7 @@ body {
   box-sizing: border-box;
 }
 
-.view-parse {
+.___lp-json-view-App-view-parse {
   position: absolute;
   right: 20px;
   top: 20px;
@@ -69,6 +68,43 @@ body {
   transition: all 0.5s;
 }
 
-.view-parse:hover {
+.___lp-json-view-App-view-parse:hover {
   opacity: 1;
+}
+
+.___lp-json-view-App-switch {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  border: 1px solid #000;
+  font-size: 14px;
+  background-color: #fff;
+  user-select: none;
+  z-index: 999;
+}
+
+.___lp-json-view-App-switch > div {
+  margin: 5px;
+  cursor: pointer;
+  padding: 3px;
+}
+
+.___lp-json-view-App-switch-active {
+  background-color: #333;
+  color: #fff;
+}
+
+.___lp-json-view-App-status {
+  font-size: 14px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+}
+
+.___lp-json-view-App-status select {
+  padding: 3px;
+  font-size: 14px;
+  outline: none;
 }
