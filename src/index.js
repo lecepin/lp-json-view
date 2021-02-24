@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactJson from "lp-rjv";
+import dragSvg from "./drag.svg";
+import githubSvg from "./github.svg";
 import "./index.css";
 
 class App extends React.Component {
@@ -14,6 +16,10 @@ class App extends React.Component {
       rjvKey: Date.now(),
       collapsed: false,
     };
+    this.refEdit = null;
+    this.isDragStart = false;
+    this.dragStartX = 0;
+    this.dragStartWidth = 0;
   }
   componentDidMount() {
     if (
@@ -51,6 +57,9 @@ class App extends React.Component {
   }
 
   handleViewRawClick(value) {
+    if (this.state.viewRaw == value) {
+      return;
+    }
     if (value) {
       this.el = document.createElement("pre");
       this.el.style.cssText = "word-wrap: break-word; white-space: pre-wrap;";
@@ -107,12 +116,40 @@ class App extends React.Component {
     this.setState({ collapsed: value, rjvKey: Date.now() });
   }
 
+  handleMouseMove(e) {
+    if (!this.isDragStart) {
+      return;
+    }
+    let _width = this.dragStartWidth + (e.clientX - this.dragStartX);
+
+    if (_width > (document.body.offsetWidth / 3) * 2) {
+      return;
+    }
+    _width = _width < 50 ? 0 : _width;
+
+    this.refEdit.style.width = _width + "px";
+  }
+
+  handleMouseDown(e) {
+    this.dragStartX = e.clientX;
+    this.dragStartWidth = this.refEdit.clientWidth;
+    this.isDragStart = true;
+  }
+
+  handleMouseUp(e) {
+    this.isDragStart = false;
+  }
+
   render() {
     const { data, showView, viewRaw, isJson, rjvKey, collapsed } = this.state;
     const url = new URL(window.location.href);
 
     return (
-      <div className="___lp-json-view-App">
+      <div
+        className="___lp-json-view-App"
+        onMouseMove={(e) => this.handleMouseMove(e)}
+        onMouseUp={(e) => this.handleMouseUp(e)}
+      >
         {showView ? (
           <div className="___lp-json-view-App-view">
             <div className="___lp-json-view-App-status">
@@ -125,6 +162,14 @@ class App extends React.Component {
                 <option value="3">展开3层</option>
               </select>
             </div>
+
+            <div className="___lp-json-view-App-github">
+              <img
+                src="https://img.alicdn.com/imgextra/i2/O1CN01qhNDGF1un98WGeyIt_!!6000000006081-55-tps-128-128.svg"
+                onClick={() => window.open("https://github.com/lecepin")}
+              />
+            </div>
+
             <ReactJson
               collapsed={collapsed}
               name={null}
@@ -141,13 +186,22 @@ class App extends React.Component {
           window.location.href.indexOf("chrome-extension://") == 0) ? (
           <div className="___lp-json-view-App-view">
             <div className="___lp-json-view-App-parse-box">
-              <div>
+              <div
+                className="___lp-json-view-App-parse-box-edit"
+                ref={(_) => (this.refEdit = _)}
+              >
                 <textarea
                   className="___lp-json-view-App-parse-box-textarea"
                   onChange={(e) => this.handleTextAreaChange(e)}
                 ></textarea>
               </div>
-              <div>
+              <div
+                className="___lp-json-view-App-parse-box-drag"
+                onMouseDown={(e) => this.handleMouseDown(e)}
+              >
+                <img src={dragSvg} />
+              </div>
+              <div className="___lp-json-view-App-parse-box-view">
                 <div className="___lp-json-view-App-status">
                   展开状态：
                   <select onChange={(e) => this.handleStatusChange(e)}>
@@ -158,6 +212,14 @@ class App extends React.Component {
                     <option value="3">展开3层</option>
                   </select>
                 </div>
+
+                <div className="___lp-json-view-App-github">
+                  <img
+                    src={githubSvg}
+                    onClick={() => window.open("https://github.com/lecepin")}
+                  />
+                </div>
+
                 <ReactJson
                   key={rjvKey}
                   name={null}

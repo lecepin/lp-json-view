@@ -30,7 +30,43 @@ body {
   height: calc(100vh - 40px);
 }
 
-.___lp-json-view-App-parse-box > div {
+.___lp-json-view-App-parse-box-edit {
+  width: 30%;
+  overflow: hidden;
+}
+
+.___lp-json-view-App-parse-box-edit textarea {
+  resize: none;
+}
+
+.___lp-json-view-App-parse-box-drag {
+  width: 15px;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: ew-resize;
+  transition: all 0.5s;
+  display: flex;
+  align-items: center;
+  opacity: 0.3;
+}
+
+.___lp-json-view-App-parse-box-drag:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  opacity: 1;
+}
+
+.___lp-json-view-App-parse-box-drag img {
+  width: 100%;
+  pointer-events: none;
+}
+
+.___lp-json-view-App-parse-box-view {
+  width: 0;
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+}
+/* .___lp-json-view-App-parse-box > div {
   width: 0;
   flex-grow: 1;
 }
@@ -46,7 +82,7 @@ body {
   margin-right: -20px;
   height: 100%;
   overflow-y: auto;
-}
+} */
 
 .___lp-json-view-App-parse-box-textarea {
   width: 100%;
@@ -74,20 +110,21 @@ body {
 
 .___lp-json-view-App-switch {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 15px;
+  right: 110px;
+  opacity: 0.8;
   display: flex;
   border: 1px solid #000;
-  font-size: 14px;
+  font-size: 12px;
   background-color: #fff;
   user-select: none;
   z-index: 999;
 }
 
 .___lp-json-view-App-switch > div {
-  margin: 5px;
+  margin: 3px;
   cursor: pointer;
-  padding: 3px;
+  padding: 2px;
 }
 
 .___lp-json-view-App-switch-active {
@@ -101,6 +138,24 @@ body {
   top: 20px;
   right: 20px;
   z-index: 999;
+}
+
+.___lp-json-view-App-github {
+  position: fixed;
+  z-index: 999;
+  right: 20px;
+  bottom: -10px;
+  width: 70px;
+}
+
+.___lp-json-view-App-github img {
+  width: 100%;
+  transition: all 0.5s;
+}
+
+.___lp-json-view-App-github img:hover {
+  cursor: pointer;
+  transform: scale(1.1);
 }
 
 .___lp-json-view-App-status select {

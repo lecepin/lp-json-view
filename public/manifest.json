@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Lp Json-view",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "JSON View Tree，JSON 格式转换查看",
   "icons": {
     "16": "icons/icon_16.png",
@@ -20,11 +20,11 @@
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "css": ["static/css/main.55101f34.chunk.css"],
+      "css": ["static/css/main.df27c1a1.chunk.css"],
       "js": [
         "boot.js",
-        "static/js/2.88e0994d.chunk.js",
-        "static/js/main.973f4b35.chunk.js",
+        "static/js/2.ecac998a.chunk.js",
+        "static/js/main.8f2e913d.chunk.js",
         "contentScript.js"
       ]
     }
