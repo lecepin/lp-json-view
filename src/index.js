@@ -8,6 +8,14 @@ import "./index.css";
 class App extends React.Component {
   constructor(props) {
     super(props);
+    
+    if (
+      window.location.href.indexOf("chrome-extension://") == 0 &&
+      window.location.href.indexOf("?jump") > 0
+    ) {
+      window.chrome.tabs.create({ url: "index.html?parse" });
+    }
+
     this.state = {
       data: "",
       showView: false,
@@ -21,13 +29,9 @@ class App extends React.Component {
     this.dragStartX = 0;
     this.dragStartWidth = 0;
   }
+
+  
   componentDidMount() {
-    if (
-      window.location.href.indexOf("chrome-extension://") == 0 &&
-      window.location.href.indexOf("?jump") > 0
-    ) {
-      window.chrome.tabs.create({ url: "index.html?parse" });
-    }
     let content = "";
     this.el = null;
 
@@ -88,7 +92,7 @@ class App extends React.Component {
 
   handleTextAreaChange(e) {
     e.persist();
-
+    
     try {
       let _value = e.target.value?.trim() || '';
       
@@ -96,11 +100,10 @@ class App extends React.Component {
         throw 0;
       }
 
-      let jsonData;
-      eval('jsonData = ' + e.target.value);
+      eval('window.____lp_____jsonData = ' + e.target.value);
 
       this.setState({
-        data: jsonData,
+        data: window.____lp_____jsonData,
         rjvKey: Date.now(),
       });
     } catch (error) {

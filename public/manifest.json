@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Lp Json-view",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "JSON View Tree，JSON 格式转换查看",
   "icons": {
     "16": "icons/icon_16.png",
@@ -9,6 +9,7 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
     "scripts": ["background.js"]
   },
@@ -20,13 +21,8 @@
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "css": ["static/css/main.df27c1a1.chunk.css"],
-      "js": [
-        "boot.js",
-        "static/js/2.ecac998a.chunk.js",
-        "static/js/main.8f2e913d.chunk.js",
-        "contentScript.js"
-      ]
+      "css": [],
+      "js": []
     }
   ],
   "homepage_url": "https://github.com/lecepin"
