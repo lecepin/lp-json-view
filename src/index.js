@@ -90,7 +90,15 @@ class App extends React.Component {
     e.persist();
 
     try {
-      let jsonData = JSON.parse(e.target.value);
+      let _value = e.target.value?.trim() || '';
+      
+      if(_value[0] != '{' || _value[_value.length - 1] != '}') {
+        throw 0;
+      }
+
+      let jsonData;
+      eval('jsonData = ' + e.target.value);
+
       this.setState({
         data: jsonData,
         rjvKey: Date.now(),
@@ -150,6 +158,7 @@ class App extends React.Component {
         onMouseMove={(e) => this.handleMouseMove(e)}
         onMouseUp={(e) => this.handleMouseUp(e)}
       >
+        {/* 源码模式，点击 JSON 数据 按钮查看 */}
         {showView ? (
           <div className="___lp-json-view-App-view">
             <div className="___lp-json-view-App-status">
@@ -181,8 +190,9 @@ class App extends React.Component {
           </div>
         ) : null}
 
+        {/* parse 下，非 插件模式 OR 插件页面下 显示 */}
         {url.search.includes("parse") &&
-        (!window.chrome.runtime.id ||
+        (!window.chrome?.runtime?.id ||
           window.location.href.indexOf("chrome-extension://") == 0) ? (
           <div className="___lp-json-view-App-view">
             <div className="___lp-json-view-App-parse-box">
@@ -227,7 +237,6 @@ class App extends React.Component {
                   iconStyle="square"
                   indentWidth={2}
                   displayDataTypes={false}
-                  onDelete={(f) => f}
                   collapsed={collapsed}
                 />
               </div>
@@ -261,7 +270,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  !window.chrome.runtime.id
+  !window.chrome?.runtime?.id
     ? document.getElementById("___lp-json-view-root2")
     : document.getElementById("___lp-json-view-root")
 );
