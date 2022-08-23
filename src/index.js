@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactJson from "lp-rjv";
+import parseJson from "jsonic";
 import dragSvg from "./drag.svg";
 import githubSvg from "./github.svg";
 import "./index.css";
@@ -8,7 +9,7 @@ import "./index.css";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    
+
     if (
       window.location.href.indexOf("chrome-extension://") == 0 &&
       window.location.href.indexOf("?jump") > 0
@@ -30,11 +31,11 @@ class App extends React.Component {
     this.dragStartWidth = 0;
   }
 
-  
   componentDidMount() {
     let content = "";
     this.el = null;
 
+    // 取源码 JSON 字符
     if (
       window.document.getElementsByTagName("pre") &&
       window.document.getElementsByTagName("pre")[0]
@@ -47,11 +48,23 @@ class App extends React.Component {
     }
 
     try {
-      if (content.trimLeft().indexOf("{") == 0 && JSON.parse(content)) {
+      if (content.trimStart().indexOf("{") == 0 && JSON.parse(content)) {
         this.setState({
           data: content,
           isJson: true,
         });
+
+        let _ = window?.chrome?.runtime?.sendMessage?.(
+          {
+            storage: {
+              type: "get",
+              key: "auto-show",
+            },
+          },
+          (value) => {
+            value && this.handleViewRawClick(!value);
+          }
+        );
       }
     } catch (error) {
       this.setState({
@@ -60,6 +73,7 @@ class App extends React.Component {
     }
   }
 
+  // 源码下 切视图
   handleViewRawClick(value) {
     if (this.state.viewRaw == value) {
       return;
@@ -92,27 +106,26 @@ class App extends React.Component {
 
   handleTextAreaChange(e) {
     e.persist();
-    
+
     try {
-      let _value = e.target.value?.trim() || '';
-      
-      if(_value[0] != '{' || _value[_value.length - 1] != '}') {
+      let _value = e.target.value?.trim() || "";
+
+      if (_value[0] != "{" || _value[_value.length - 1] != "}") {
         throw 0;
       }
 
-      eval('window.____lp_____jsonData = ' + e.target.value);
-
       this.setState({
-        data: window.____lp_____jsonData,
+        data: parseJson(e.target.value),
         rjvKey: Date.now(),
       });
     } catch (error) {
       this.setState({
-        data: 1,
+        data: {},
       });
     }
   }
 
+  // 视图配置
   handleStatusChange(e) {
     e.persist();
     let value = false;
@@ -247,6 +260,7 @@ class App extends React.Component {
           </div>
         ) : null}
 
+        {/* 源码 且 符合JSON 字符，显示按钮组 */}
         {(isJson && (
           <div className="___lp-json-view-App-switch">
             <div
