@@ -1,7 +1,7 @@
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20201023110346458.png#pic_center)
 
-Chrome 商店[地址](https://chrome.google.com/webstore/detail/lp-json-view/damnpodagpacfhdgfopbhnfldaooekgb)
+Chrome 商店[地址](https://chrome.google.com/webstore/detail/lp-json-view/jcglapefdggmbmnlnmijdmkahmiaconb)
 
 ---
 **查看/格式化** 二合一。
